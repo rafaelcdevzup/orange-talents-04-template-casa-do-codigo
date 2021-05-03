@@ -1,5 +1,7 @@
 package br.com.zupacademy.rafael.casadocogido.Controller;
 
+import java.util.Optional;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +25,11 @@ public class AutorController {
 	@PostMapping
 	public ResponseEntity<AutorRequest> inserindoAutor(@RequestBody @Valid AutorRequest request) {
 		Autor autor = request.toModel();
+		Optional<Autor> verificaEmail = autorRepository.findByEmail(request.getEmail());
+		if(verificaEmail.isPresent()) {
+			return ResponseEntity.badRequest().build();
+		}
 		autorRepository.save(autor);
-		return ResponseEntity.ok().build();
+		return ResponseEntity.ok().build();	
 	}
 }
